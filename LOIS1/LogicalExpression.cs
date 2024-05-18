@@ -127,52 +127,62 @@ namespace LOIS1
 
         public List<String> truth_table_print_strings()
         {
+            String print_string = "";
             List<String> output_lines = new List<String>();
             List<LogicalExpression> subtrees = new List<LogicalExpression>();
             BinaryTree tree = this.syntax_tree;
+
             this.get_subtrees(tree, ref subtrees);
             subtrees.Reverse();
+            
             List<String> operands = new List<String>();
             int bits = this.operands_and_their_amount(ref operands);
-            List<bool> number = new List<bool>();
-            for (int i = 0; i < bits; i++)
-            {
-                number.Add(false);
-            }
-            String print_string = "";
+            
+            List<bool> number = Enumerable.Repeat(false, bits).ToList();
+            
             for (int i = 0; i < operands.Count; i++)
             {
                 print_string += $"I {operands[i]} ";
             }
+            
             for (int i = 0; i < subtrees.Count; i++)
             {
                 print_string += $"I {subtrees[i].expression} ";
             }
+            
             output_lines.Add(print_string);
+            
             for (int i = 0; i < Math.Pow(2, bits); i++)
             {
                 print_string = "";
+                
                 for (int j = 0; j < number.Count; j++)
                 {
                     print_string += $"I {Convert.ToString(Convert.ToInt32(number[j]))} ";
                 }
+                
                 for (int j = 0; j < subtrees.Count; j++)
                 {
                     print_string += "I ";
+                    
                     for (int k = 0; k < subtrees[j].expression.Length / 2 - 
                         Convert.ToInt32(subtrees[j].expression.Length % 2 == 0); k++)
                     {
                         print_string += " ";
                     }
+
                     print_string += $"{Convert.ToString(Convert.ToInt32(this.evaluate(subtrees[j].syntax_tree, number)))} ";
+                    
                     for (int k = 0; k < subtrees[j].expression.Length / 2; k++)
                     {
                         print_string += " ";
                     }
                 }
+
                 output_lines.Add(print_string);
                 number = this.increment(number);
             }
+
             return output_lines;
         }
 
@@ -192,6 +202,28 @@ namespace LOIS1
             {
                 get_subtrees(current_subtree.right_child, ref subtrees);
             }
+        }
+
+        public bool is_neutral()
+        {
+            List<bool> final_values = new List<bool>();
+            List<String> useless_operands = new List<String>();
+            int bits = this.operands_and_their_amount(ref useless_operands);
+
+            List<bool> number = Enumerable.Repeat(false, bits).ToList();
+            bool first_value = this.evaluate(this.syntax_tree, number);
+
+            for(int i = 0; i < Math.Pow(2, bits); i++)
+            {
+                if (this.evaluate(this.syntax_tree, number) != first_value)
+                {
+                    return true;
+                }
+
+                number = this.increment(number);
+            }
+
+            return false;
         }
 
         public int operands_and_their_amount(ref List<String> operands)

@@ -16,6 +16,10 @@ namespace LOIS1
             {
                 Console.WriteLine(table[i]);
             }
+            if (l.is_neutral())
+            {
+                Console.WriteLine("дофлрпрапваыпрол");
+            }
         }
     }
 }
