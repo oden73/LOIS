@@ -9,13 +9,41 @@ namespace LOIS1
         Dictionary<String, int> indexes_dict;
         Dictionary<int, String> values_dict;
 
-        public LogicalExpression(String expression)
+        public LogicalExpression(String? expression)
         {
+            if (expression == null || expression == "" || expression[0] != '(')
+            {
+                throw new ArgumentNullException("Введеное выражение не является корректным");
+            }
+
             this.expression = expression;
+            List<int> marked_brackets = new List<int>();
+            this.expression_validation(1, ref marked_brackets);
+
             this.syntax_tree = this.form_syntax_tree();
             this.indexes_dict = new Dictionary<String, int>();
             this.values_dict = new Dictionary<int, String>();
             this.form_indexes_and_values_dict();
+        }
+
+        public void expression_validation(int start_index, ref List<int> marked_brackets)
+        {
+            bool walked = false;
+            for (int i = start_index; i < this.expression.Length; i++)
+            {
+                if (this.expression[i] == '(' && !walked)
+                {
+                    walked = true;
+                    this.expression_validation(i + 1, ref marked_brackets); 
+                }
+                else if (this.expression[i] == ')' && !marked_brackets.Contains(i) && i - start_index + Convert.ToInt32(start_index == 1) >= 2)
+                {
+                    marked_brackets.Add(i);
+                    return;
+                }
+            }
+
+            throw new ArgumentException("Введеное выражение не является корректным");
         }
 
         public BinaryTree form_syntax_tree()
@@ -39,7 +67,7 @@ namespace LOIS1
                 else if (this.expression[i] == '!')
                 {
                     BinaryTree parent = parent_stack.Pop();
-                    parent.key = "¬";
+                    parent.key = "!";
                     parent_stack.Push(parent);
                 }
                 else if (this.is_letter(this.expression[i]))
@@ -48,7 +76,7 @@ namespace LOIS1
                     BinaryTree parent = parent_stack.Pop();
                     current_subtree = parent;
                 }
-                else if (this.expression[i] == '-' || (this.expression[i] == '/' && this.expression[i - 1] != '\\')
+                else if ((this.expression[i] == '/' && this.expression[i - 1] != '\\')
                     || (this.expression[i] == '\\' && this.expression[i - 1] != '/'))
                 {
                     continue;
@@ -70,7 +98,7 @@ namespace LOIS1
                 }
                 else
                 {
-                    throw new ArgumentException("Invalid expression");
+                    throw new ArgumentException("Введеное выражение не является корректным");
                 }
             }
             return syntax_tree;
@@ -112,7 +140,7 @@ namespace LOIS1
                     case "~":
                         return this.equivalence(this.evaluate(left_child, values_list), this.evaluate(right_child, values_list));
                     default:
-                        throw new ArgumentException("Invalid expression");
+                        throw new ArgumentException("Введеное выражение не является корректным");
                 }
             }
             else if (left_child != null && right_child == null)
