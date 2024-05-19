@@ -33,10 +33,10 @@ namespace LOIS1
             {
                 if (this.expression[i] == '(' && !walked)
                 {
+                    this.expression_validation(i + 1, ref marked_brackets);
                     walked = true;
-                    this.expression_validation(i + 1, ref marked_brackets); 
                 }
-                else if (this.expression[i] == ')' && !marked_brackets.Contains(i) && i - start_index + Convert.ToInt32(start_index == 1) >= 2)
+                else if (this.expression[i] == ')' && !marked_brackets.Exists(element => element == i) && i - start_index + Convert.ToInt32(start_index == 1) >= 2)
                 {
                     marked_brackets.Add(i);
                     return;
@@ -76,7 +76,7 @@ namespace LOIS1
                     BinaryTree parent = parent_stack.Pop();
                     current_subtree = parent;
                 }
-                else if ((this.expression[i] == '/' && this.expression[i - 1] != '\\')
+                else if (this.expression[i] == '-' || (this.expression[i] == '/' && this.expression[i - 1] != '\\')
                     || (this.expression[i] == '\\' && this.expression[i - 1] != '/'))
                 {
                     continue;
