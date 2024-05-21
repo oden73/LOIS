@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LOIS1
 {
     public class LogicalExpression
     {
-        private String expression;
+        private string expression;
         private BinaryTree syntax_tree;
-        Dictionary<String, int> indexes_dict;
-        Dictionary<int, String> values_dict;
+        private Dictionary<string, int> indexes_dict;
+        private Dictionary<int, string> values_dict;
 
-        public LogicalExpression(String? expression)
+        public LogicalExpression(string expression)
         {
-            if (expression == null || expression == "" || expression[0] != '(')
+            if (string.IsNullOrEmpty(expression) || expression[0] != '(')
             {
                 throw new ArgumentNullException("Введеное выражение не является корректным");
             }
@@ -21,8 +23,8 @@ namespace LOIS1
             this.expression_validation(1, ref marked_brackets);
 
             this.syntax_tree = this.form_syntax_tree();
-            this.indexes_dict = new Dictionary<String, int>();
-            this.values_dict = new Dictionary<int, String>();
+            this.indexes_dict = new Dictionary<string, int>();
+            this.values_dict = new Dictionary<int, string>();
             this.form_indexes_and_values_dict();
         }
 
@@ -70,7 +72,7 @@ namespace LOIS1
                     parent.key = "!";
                     parent_stack.Push(parent);
                 }
-                else if (this.is_letter(this.expression[i]))
+                else if (this.is_letter(this.expression[i]) || this.is_constant(this.expression[i]))
                 {
                     current_subtree.key = "" + this.expression[i];
                     BinaryTree parent = parent_stack.Pop();
@@ -104,13 +106,12 @@ namespace LOIS1
             return syntax_tree;
         }
 
-
         public void form_indexes_and_values_dict()
         {
-            List<String> chars = new List<String>();
+            List<string> chars = new List<string>();
             for (int i = 0; i < this.expression.Length; i++)
             {
-                if (this.expression[i] >= 'A' && this.expression[i] <= 'Z' && 
+                if ((this.expression[i] >= 'A' && this.expression[i] <= 'Z' || this.is_constant(this.expression[i])) &&
                     !chars.Exists(element => element == "" + this.expression[i]))
                 {
                     chars.Add("" + this.expression[i]);
@@ -120,13 +121,13 @@ namespace LOIS1
             for (int i = 0; i < chars.Count; i++)
             {
                 this.indexes_dict[chars[i]] = i;
-                values_dict[i] = chars[i]; 
+                values_dict[i] = chars[i];
             }
         }
 
         public bool evaluate(BinaryTree syntax_subtree, List<bool> values_list)
         {
-            BinaryTree? left_child = syntax_subtree.left_child, right_child = syntax_subtree.right_child;
+            BinaryTree left_child = syntax_subtree.left_child, right_child = syntax_subtree.right_child;
             if (left_child != null && right_child != null)
             {
                 switch (syntax_subtree.key)
@@ -149,6 +150,10 @@ namespace LOIS1
             }
             else
             {
+                if (this.is_constant(syntax_subtree.key[0]))
+                {
+                    return syntax_subtree.key == "1";
+                }
                 return values_list[this.indexes_dict[syntax_subtree.key]];
             }
         }
@@ -161,7 +166,7 @@ namespace LOIS1
             List<bool> number = Enumerable.Repeat(false, bits).ToList();
             bool first_value = this.evaluate(this.syntax_tree, number);
 
-            for(int i = 0; i < Math.Pow(2, bits); i++)
+            for (int i = 0; i < Math.Pow(2, bits); i++)
             {
                 if (this.evaluate(this.syntax_tree, number) != first_value)
                 {
@@ -176,17 +181,17 @@ namespace LOIS1
 
         public int amount_of_operands()
         {
-            List<String> operands = new List<String>();
+            List<string> operands = new List<string>();
 
             for (int i = 0; i < this.expression.Length; i++)
             {
-                if (this.expression[i] >= 'A' && this.expression[i] <= 'Z' &&
+                if ((this.expression[i] >= 'A' && this.expression[i] <= 'Z' || this.is_constant(this.expression[i])) &&
                     !operands.Exists(element => element == "" + this.expression[i]))
                 {
                     operands.Add("" + this.expression[i]);
                 }
             }
-            
+
             return operands.Count;
         }
 
@@ -208,16 +213,21 @@ namespace LOIS1
 
         public bool is_letter(char symbol)
         {
-            return symbol != '/' && symbol != '\\' && symbol != '>' && symbol != '~' && symbol != ')' && symbol != '-';
+            return symbol >= 'A' && symbol <= 'Z';
+        }
+
+        public bool is_constant(char symbol)
+        {
+            return symbol == '0' || symbol == '1';
         }
 
         public bool is_symbol(int index)
         {
-            if(this.expression == null)
+            if (this.expression == null)
             {
                 return false;
             }
-            return (this.expression[index] == '\\' && this.expression[index - 1] == '/') || 
+            return (this.expression[index] == '\\' && this.expression[index - 1] == '/') ||
                 (this.expression[index] == '/' && this.expression[index - 1] == '\\') || this.expression[index] == '~'
                 || (this.expression[index] == '>' && this.expression[index - 1] == '-');
         }
@@ -246,6 +256,6 @@ namespace LOIS1
         {
             return !first;
         }
-
     }
+
 }
