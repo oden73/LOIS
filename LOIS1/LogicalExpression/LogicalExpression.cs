@@ -199,6 +199,8 @@ namespace LOIS1
             List<bool> final_values = new List<bool>();
             int bits = this.amount_of_operands();
 
+            bool value = false;
+
             List<bool> number = Enumerable.Repeat(false, bits).ToList();
             bool first_value = this.evaluate(this.syntax_tree, number);
 
@@ -206,13 +208,14 @@ namespace LOIS1
             {
                 if (this.evaluate(this.syntax_tree, number) != first_value)
                 {
-                    return true;
+                    value = true;
+                    return value;
                 }
 
                 number = this.increment(number);
             }
 
-            return false;
+            return value;
         }
 
         public int amount_of_operands()
