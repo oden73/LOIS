@@ -77,9 +77,24 @@ namespace LOIS1
                 }
                 else if (this.expression[i] == '!')
                 {
-                    BinaryTree parent = parent_stack.Pop();
-                    parent.key = "!";
-                    parent_stack.Push(parent);
+                    BinaryTree top_element = parent_stack.First();
+                    if (top_element.key == "")
+                    {
+                        BinaryTree parent = parent_stack.Pop();
+                        parent.key = "!";
+                        parent_stack.Push(parent);
+                    }
+                    else
+                    {
+                        current_subtree.key = "!";
+                        current_subtree.insert_left("", new List<int>());
+                        current_subtree.subexpression_indexes.Add(i);
+                        parent_stack.Push(current_subtree);
+                        if (current_subtree.left_child != null)
+                        {
+                            current_subtree = current_subtree.left_child;
+                        }
+                    }
                 }
                 else if (this.is_letter(this.expression[i]) || this.is_constant(this.expression[i]))
                 {
@@ -136,6 +151,10 @@ namespace LOIS1
 
         public bool evaluate(BinaryTree syntax_subtree, List<bool> values_list)
         {
+            if (syntax_subtree.key == "")
+            {
+                throw new ArgumentException("Введенное выражение не является корректным");
+            }
             BinaryTree left_child = syntax_subtree.left_child, right_child = syntax_subtree.right_child;
             if (left_child != null && right_child != null)
             {
