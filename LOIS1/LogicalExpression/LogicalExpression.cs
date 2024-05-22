@@ -1,6 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿// Выполнили студенты группы 221701 БГУИР:
+// - Карпук Максим Витальевич (oden73)
+// - Телица Илья Денисович
+// Вариант 4
+// 
+// Класс для хранения логического выражения
+// 22.05.2024
+//
+// Источники:
+// - Проектирование программного обеспечения интеллектуальных систем (3 семестр)
+//
+
 
 namespace LOIS1
 {
@@ -13,7 +22,7 @@ namespace LOIS1
 
         public LogicalExpression(string expression)
         {
-            if (string.IsNullOrEmpty(expression) || expression[0] != '(')
+            if (string.IsNullOrEmpty(expression))
             {
                 throw new ArgumentNullException("Введеное выражение не является корректным");
             }
