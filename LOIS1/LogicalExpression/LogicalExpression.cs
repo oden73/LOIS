@@ -183,12 +183,13 @@ namespace LOIS1
             }
             else
             {
+                bool value = false;
                 if (this.is_constant(syntax_subtree.key[0]))
                 {
-                    bool value_const = syntax_subtree.key == "1";
-                    return value_const;
+                    value = syntax_subtree.key == "1";
+                    return value;
                 }
-                bool value = values_list[this.indexes_dict[syntax_subtree.key]];
+                value = values_list[this.indexes_dict[syntax_subtree.key]];
                 return value;
             }
         }
@@ -261,11 +262,12 @@ namespace LOIS1
 
         public bool is_symbol(int index)
         {
+            bool value = false;
             if (this.expression == null)
             {
-                return false;
+                return value;
             }
-            bool value = (this.expression[index] == '\\' && this.expression[index - 1] == '/') ||
+            value = (this.expression[index] == '\\' && this.expression[index - 1] == '/') ||
                 (this.expression[index] == '/' && this.expression[index - 1] == '\\') || this.expression[index] == '~'
                 || (this.expression[index] == '>' && this.expression[index - 1] == '-');
             return value;
