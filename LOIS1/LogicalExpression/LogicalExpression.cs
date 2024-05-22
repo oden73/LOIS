@@ -161,28 +161,35 @@ namespace LOIS1
                 switch (syntax_subtree.key)
                 {
                     case "/":
-                        return this.disjunction(this.evaluate(left_child, values_list), this.evaluate(right_child, values_list));
+                        bool value = this.disjunction(this.evaluate(left_child, values_list), this.evaluate(right_child, values_list));
+                        return value;
                     case "\\":
-                        return this.conjunction(this.evaluate(left_child, values_list), this.evaluate(right_child, values_list));
+                        value = this.conjunction(this.evaluate(left_child, values_list), this.evaluate(right_child, values_list));
+                        return value;
                     case ">":
-                        return this.implication(this.evaluate(left_child, values_list), this.evaluate(right_child, values_list));
+                        value = this.implication(this.evaluate(left_child, values_list), this.evaluate(right_child, values_list));
+                        return value;
                     case "~":
-                        return this.equivalence(this.evaluate(left_child, values_list), this.evaluate(right_child, values_list));
+                        value = this.equivalence(this.evaluate(left_child, values_list), this.evaluate(right_child, values_list));
+                        return value;
                     default:
                         throw new ArgumentException("Введеное выражение не является корректным");
                 }
             }
             else if (left_child != null && right_child == null)
             {
-                return this.negation(this.evaluate(left_child, values_list));
+                bool value = this.negation(this.evaluate(left_child, values_list));
+                return value;
             }
             else
             {
                 if (this.is_constant(syntax_subtree.key[0]))
                 {
-                    return syntax_subtree.key == "1";
+                    bool value_const = syntax_subtree.key == "1";
+                    return value_const;
                 }
-                return values_list[this.indexes_dict[syntax_subtree.key]];
+                bool value = values_list[this.indexes_dict[syntax_subtree.key]];
+                return value;
             }
         }
 
@@ -220,7 +227,8 @@ namespace LOIS1
                 }
             }
 
-            return operands.Count;
+            int value = operands.Count;
+            return value;
         }
 
         public List<bool> increment(List<bool> number)
@@ -241,12 +249,14 @@ namespace LOIS1
 
         public bool is_letter(char symbol)
         {
-            return symbol >= 'A' && symbol <= 'Z';
+            bool value = symbol >= 'A' && symbol <= 'Z';
+            return value;
         }
 
         public bool is_constant(char symbol)
         {
-            return symbol == '0' || symbol == '1';
+            bool value = symbol == '0' || symbol == '1';
+            return value;
         }
 
         public bool is_symbol(int index)
@@ -255,34 +265,40 @@ namespace LOIS1
             {
                 return false;
             }
-            return (this.expression[index] == '\\' && this.expression[index - 1] == '/') ||
+            bool value = (this.expression[index] == '\\' && this.expression[index - 1] == '/') ||
                 (this.expression[index] == '/' && this.expression[index - 1] == '\\') || this.expression[index] == '~'
                 || (this.expression[index] == '>' && this.expression[index - 1] == '-');
+            return value;
         }
 
         public bool conjunction(bool first, bool second)
         {
-            return first && second;
+            bool value = first && second;
+            return value;
         }
 
         public bool disjunction(bool first, bool second)
         {
-            return first || second;
+            bool value = first || second;
+            return value;
         }
 
         public bool implication(bool first, bool second)
         {
-            return !first || second;
+            bool value = !first || second;
+            return value;
         }
 
         public bool equivalence(bool first, bool second)
         {
-            return first == second;
+            bool value = first == second;
+            return value;
         }
 
         public bool negation(bool first)
         {
-            return !first;
+            bool value = !first;
+            return value;
         }
     }
 
