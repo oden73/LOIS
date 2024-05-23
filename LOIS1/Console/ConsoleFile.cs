@@ -62,9 +62,9 @@ namespace LOIS1
                     Console.WriteLine("Выражение не является нейтральным");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine("Введенное выражение не является корректным");
                 return;
             }
         }

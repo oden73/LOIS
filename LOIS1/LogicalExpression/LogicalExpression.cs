@@ -22,19 +22,46 @@ namespace LOIS1
 
         public LogicalExpression(string expression)
         {
-            if (string.IsNullOrEmpty(expression))
-            {
-                throw new ArgumentNullException("Введеное выражение не является корректным");
-            }
-
             this.expression = expression;
-            List<int> marked_brackets = new List<int>();
-            this.expression_validation(1, ref marked_brackets);
+
+            this.initial_validation();
 
             this.syntax_tree = this.form_syntax_tree();
             this.indexes_dict = new Dictionary<string, int>();
             this.values_dict = new Dictionary<int, string>();
             this.form_indexes_and_values_dict();
+        }
+
+        public void initial_validation()
+        {
+            if (string.IsNullOrEmpty(this.expression))
+            {
+                throw new ArgumentNullException("Введеное выражение не является корректным");
+            }
+
+            if (this.expression.Length == 1)
+            {
+                if(this.expression[0] <= 'Z' && this.expression[0] >= 'A')
+                {
+                    return;
+                }
+                else
+                {
+                    throw new ArgumentNullException("Введеное выражение не является корректным");
+                }
+            }
+            else
+            {
+                if (this.expression[0] != '(')
+                {
+                    throw new ArgumentNullException("Введеное выражение не является корректным");
+                }
+                else
+                {
+                    List<int> marked_brackets = new List<int>();
+                    this.expression_validation(1, ref marked_brackets);
+                }
+            }
         }
 
         public void expression_validation(int start_index, ref List<int> marked_brackets)
@@ -151,7 +178,7 @@ namespace LOIS1
 
         public bool evaluate(BinaryTree syntax_subtree, List<bool> values_list)
         {
-            if (syntax_subtree.key == "")
+            if (syntax_subtree.key == "" && (syntax_subtree.left_child != null && !this.is_letter(syntax_subtree.left_child.key[0])))
             {
                 throw new ArgumentException("Введенное выражение не является корректным");
             }
