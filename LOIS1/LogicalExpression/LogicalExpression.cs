@@ -88,7 +88,6 @@ namespace LOIS1
         {
             Stack<BinaryTree> parent_stack = new Stack<BinaryTree>();
             BinaryTree syntax_tree = new BinaryTree();
-            parent_stack.Push(syntax_tree);
             BinaryTree current_subtree = syntax_tree;
             for (int i = 0; i < this.expression.Length; i++)
             {
@@ -102,32 +101,20 @@ namespace LOIS1
                         current_subtree = current_subtree.left_child;
                     }
                 }
-                else if (this.expression[i] == '!')
+                else if (this.expression[i] == '!' && !this.is_symbol(i - 1))
                 {
-                    BinaryTree top_element = parent_stack.First();
-                    if (top_element.key == "")
-                    {
-                        BinaryTree parent = parent_stack.Pop();
-                        parent.key = "!";
-                        parent_stack.Push(parent);
-                    }
-                    else
-                    {
-                        current_subtree.key = "!";
-                        current_subtree.insert_left("", new List<int>());
-                        current_subtree.subexpression_indexes.Add(i);
-                        parent_stack.Push(current_subtree);
-                        if (current_subtree.left_child != null)
-                        {
-                            current_subtree = current_subtree.left_child;
-                        }
-                    }
+                    BinaryTree parent = parent_stack.Pop();
+                    parent.key = "!";
+                    parent_stack.Push(parent);
+                    
                 }
                 else if (this.is_letter(this.expression[i]) || this.is_constant(this.expression[i]))
                 {
                     current_subtree.key = "" + this.expression[i];
-                    BinaryTree parent = parent_stack.Pop();
-                    current_subtree = parent;
+                    if (i != this.expression.Length - 1)
+                    {
+                        current_subtree = parent_stack.Pop();
+                    }
                 }
                 else if (this.expression[i] == '-' || (this.expression[i] == '/' && this.expression[i - 1] != '\\')
                     || (this.expression[i] == '\\' && this.expression[i - 1] != '/'))
@@ -151,7 +138,10 @@ namespace LOIS1
                 else if (this.expression[i] == ')')
                 {
                     current_subtree.subexpression_indexes.Add(i);
-                    current_subtree = parent_stack.Pop();
+                    if (i != this.expression.Length - 1)
+                    {
+                        current_subtree = parent_stack.Pop();
+                    }
                 }
                 else
                 {
@@ -182,7 +172,7 @@ namespace LOIS1
 
         public bool evaluate(BinaryTree syntax_subtree, List<bool> values_list)
         {
-            if (syntax_subtree.key == "" && (syntax_subtree.left_child != null && !this.is_letter(syntax_subtree.left_child.key[0])))
+            if (syntax_subtree.key == "" && (syntax_subtree.left_child != null && !this.is_letter(syntax_subtree.left_child.key[0])) && syntax_subtree.left_child.key != "!")
             {
                 throw new ArgumentException("Введенное выражение не является корректным");
             }
