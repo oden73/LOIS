@@ -21,29 +21,31 @@ namespace LOIS1
             while (true)
             {
                 run();
-                while (true)
-                {
-                    Console.WriteLine("Желаете продолжить? y/n");
-                    String? key = Console.ReadLine();
-                    if (key == "y")
-                    {
-                        break;
-                    }
-                    else if (key == "n")
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Неправильный формат ввода");
-                        continue;
-                    }
-                }
+                //while (true)
+                //{
+                //    Console.WriteLine("Желаете продолжить? y/n");
+                //    String? key = Console.ReadLine();
+                //    if (key == "y")
+                //    {
+                //        break;
+                //    }
+                //    else if (key == "n")
+                //    {
+                //        return;
+                //    }
+                //    else
+                //    {
+                //        Console.WriteLine("Неправильный формат ввода");
+                //        continue;
+                //    }
+                //}
             }
         }
 
         // (A\/(B\/(C\/(D\/(E\/(F\/(G\/(H\/(I\/(J\/(K\/(L\/(M\/(N\/(O\/(P\/(Q\/(R\/(S\/(T\/(U\/(V\/(W\/(X\/(Y\/Z)))))))))))))))))))))))))
         // (A/\(B/\(C/\(D/\(E/\(F/\(G/\(H/\(I/\(J/\(K/\(L/\(M/\(N/\(O/\(P/\(Q/\(R/\(S/\(T/\(U/\(V/\(W/\(X/\(Y/\Z)))))))))))))))))))))))))
+
+        // ((A/\(B/\C))\/(((!A)/\((!B)/\D))\/(E/\(F/\G))))
 
         static public void run()
         {
@@ -65,7 +67,7 @@ namespace LOIS1
             catch (Exception ex)
             {
                 Console.WriteLine("Введенное выражение не является корректным");
-                Console.WriteLine(ex.ToString());
+                // Console.WriteLine(ex.ToString());
                 return;
             }
         }

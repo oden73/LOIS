@@ -40,7 +40,7 @@ namespace TestLogicalExpression
         [TestMethod]
         public void TestLogicalExpression3()
         {
-            String expression = "((A/\\(B/\\C))\\/((!A/\\(!B/\\D))\\/(E/\\(F/\\G))))";
+            String expression = "((A/\\(B/\\C))\\/(((!A)/\\((!B)/\\D))\\/(E/\\(F/\\G))))";
             LogicalExpression logical_expression = new LogicalExpression(expression);
 
             Assert.IsTrue(logical_expression.is_neutral());

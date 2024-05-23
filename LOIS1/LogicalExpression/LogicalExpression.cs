@@ -41,7 +41,7 @@ namespace LOIS1
 
             if (this.expression.Length == 1)
             {
-                if(this.expression[0] <= 'Z' && this.expression[0] >= 'A')
+                if((this.expression[0] <= 'Z' && this.expression[0] >= 'A') || (this.is_constant(this.expression[0])))
                 {
                     return;
                 }
@@ -136,6 +136,10 @@ namespace LOIS1
                 }
                 else if (this.is_symbol(i))
                 {
+                    if (current_subtree.key != "")
+                    {
+                        throw new ArgumentException("Введеное выражение не является корректным");
+                    }
                     current_subtree.key = "" + this.expression[i];
                     current_subtree.insert_right("", new List<int>());
                     parent_stack.Push(current_subtree);
